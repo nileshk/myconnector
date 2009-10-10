@@ -1,0 +1,32 @@
+Add order to TODO's that can be modified
+Add configurable categories for TODO's instead of levels
+Move client into seperate project
+Switch to XFire for web services
+http://barracudamvc.org/Barracuda/index.html causes cacher to hang
+http://www.yamipod.com/main/modules/home/ causes cacher to throw exception
+Clear old cookies in database
+Asynchronous process for generating index
+AJAX progress bar for generating index
+Bookmark edit should set existing value for private
+Ensure viewable and other values are valid values
+Tagging search features
+Redo validator for login
+Option to only add bookmark if URL doesn't exist for user
+Viewable cache
+Show partial cache in search results
+User preferences
+Improvements to friend system
+Edit your own bookmarks in search results
+Filter out links to images and other files in cached pages
+Extract characters from search terms that are filtered out in index generation (such as dashes).  Example: health-care is healthcare
+When delete a user, must delete everything like friends, etc.
+Fix user creation page so it lets you create new users consecutively
+Database upgrade path
+del.icio.us export/import
+Add EasyMock cglib or JMock cglib to mock HibernateTemplate in DAO's
+Add paging to result fetching (where necessary)
+Remove duplicates in result queries where they exist
+Remove folder option?  Add convert folders into tags option?
+Add bookmarks.html generation that uses algorithm based on keywords/tags
+Convert back to MyEclipse because WTP is causing problems?
+Refactor search controllers into a single class?

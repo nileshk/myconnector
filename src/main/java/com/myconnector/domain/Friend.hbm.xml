@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+		"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping default-lazy="false">
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.myconnector.domain.Friend" 
+    table="friend"
+>
+
+    <composite-id name="comp_id" class="com.myconnector.domain.FriendPK">
+        <key-property 
+            name="id" 
+            column="id" 
+            type="java.lang.String"
+            length="64"
+        />
+        <key-property 
+            name="friendId" 
+            column="friend_id" 
+            type="java.lang.String"
+            length="64"
+        />
+    </composite-id>    
+
+
+    <!-- Associations -->
+    <!-- derived association(s) for compound key -->
+    <!-- bi-directional many-to-one association to UserData -->
+    <many-to-one
+        name="userDataByFriendId"
+	    class="com.myconnector.domain.UserData"
+	    update="false"
+	    insert="false"
+	>
+    	<column name="FRIEND_ID" />
+	</many-to-one>
+	
+    <!-- bi-directional many-to-one association to UserData -->
+    <many-to-one
+        name="userDataById"
+	    class="com.myconnector.domain.UserData"
+	    update="false"
+	    insert="false"
+	>
+    	<column name="ID" />
+	</many-to-one>
+	
+    <!-- end of derived association(s) -->
+  
+
+</class>
+</hibernate-mapping>

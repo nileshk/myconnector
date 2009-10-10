@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+		"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping default-lazy="false">
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.myconnector.domain.Release" 
+    table="releases"
+>
+
+    <id
+        name="id"
+        type="java.lang.String"
+        column="id"
+    >
+        <generator class="uuid.hex" />
+    </id>
+
+    <property
+        name="title"
+        type="java.lang.String"
+        column="title"
+        length="255"
+    />
+    <property
+        name="description"
+        type="java.lang.String"
+        column="description"
+        length="255"
+    />
+    <property
+        name="instructions"
+        type="java.lang.String"
+        column="instructions"
+        length="255"
+    />
+    <property
+        name="versionNumber"
+        type="java.lang.String"
+        column="version_number"
+        length="255"
+    />
+    <property
+        name="createdDate"
+        type="java.util.Date"
+        column="created_date"
+        length="10"
+    />
+    <property
+        name="ready"
+        type="java.lang.Byte"
+        column="ready"
+        length="1"
+    />
+    <property
+        name="keywords"
+        type="java.lang.String"
+        column="keywords"
+        length="255"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to UserData -->
+    <many-to-one
+        name="createdBy"
+        class="com.myconnector.domain.UserData"
+        not-null="true"
+    >
+        <column name="CREATED_BY" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to ReleaseFileXref -->
+    <set
+        name="releaseFileXrefs"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="RELEASE_ID" />
+        </key>
+        <one-to-many 
+            class="com.myconnector.domain.ReleaseFileXref"
+        />
+    </set>
+    <!-- bi-directional one-to-many association to ReleaseUserXref -->
+    <set
+        name="releaseUserXrefs"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="RELEASE_ID" />
+        </key>
+        <one-to-many 
+            class="com.myconnector.domain.ReleaseUserXref"
+        />
+    </set>
+
+</class>
+</hibernate-mapping>

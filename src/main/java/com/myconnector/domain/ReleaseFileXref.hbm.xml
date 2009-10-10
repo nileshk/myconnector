@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+		"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping default-lazy="false">
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.myconnector.domain.ReleaseFileXref" 
+    table="release_file_xref"
+>
+
+    <composite-id name="comp_id" class="com.myconnector.domain.ReleaseFileXrefPK">
+        <key-property 
+            name="releaseId" 
+            column="release_id" 
+            type="java.lang.String"
+            length="64"
+        />
+        <key-property 
+            name="fileId" 
+            column="file_id" 
+            type="java.lang.String"
+            length="64"
+        />
+    </composite-id>    
+
+
+    <!-- Associations -->
+    <!-- derived association(s) for compound key -->
+    <!-- bi-directional many-to-one association to File -->
+    <many-to-one
+        name="file"
+	    class="com.myconnector.domain.File"
+	    update="false"
+	    insert="false"
+	>
+    	<column name="FILE_ID" />
+	</many-to-one>
+	
+    <!-- bi-directional many-to-one association to Release -->
+    <many-to-one
+        name="release"
+	    class="com.myconnector.domain.Release"
+	    update="false"
+	    insert="false"
+	>
+    	<column name="RELEASE_ID" />
+	</many-to-one>
+	
+    <!-- end of derived association(s) -->
+  
+
+</class>
+</hibernate-mapping>

@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+		"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping  default-lazy="false">
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.myconnector.domain.File" 
+    table="files"
+>
+
+    <id
+        name="id"
+        type="java.lang.String"
+        column="id"
+    >
+        <generator class="uuid.hex" />
+    </id>
+
+    <property
+        name="fileName"
+        type="java.lang.String"
+        column="file_name"
+        length="64"
+    />
+    <property
+        name="fileSize"
+        type="java.lang.Short"
+        column="file_size"
+        length="8"
+    />
+    <property
+        name="fileType"
+        type="java.lang.String"
+        column="file_type"
+        length="255"
+    />
+    <property
+        name="fileDescription"
+        type="java.lang.String"
+        column="file_description"
+        length="255"
+    />
+    <property
+        name="file"
+        type="binary"
+        column="file"
+        not-null="true"
+        length="2147483647"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to ReleaseFileXref -->
+    <set
+        name="releaseFileXrefs"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="FILE_ID" />
+        </key>
+        <one-to-many 
+            class="com.myconnector.domain.ReleaseFileXref"
+        />
+    </set>
+
+</class>
+</hibernate-mapping>

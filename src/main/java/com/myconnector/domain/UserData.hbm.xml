@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+		"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping default-lazy="false">
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.myconnector.domain.UserData" 
+    table="user_data"
+>
+
+    <id
+        name="id"
+        type="java.lang.String"
+        column="id"
+    >
+        <generator class="uuid.hex" />
+    </id>
+
+    <property
+        name="userLogin"
+        type="java.lang.String"
+        column="user_login"
+        not-null="true"
+        length="64"
+    />
+    <property
+        name="userPassword"
+        type="java.lang.String"
+        column="user_password"
+        not-null="true"
+        length="64"
+    />
+    <property
+        name="securityLevel"
+        type="byte"
+        column="security_level"
+        not-null="true"
+        length="2"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to Bookmark -->
+    <set
+        name="bookmarksByUserId"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+		order-by="add_date desc"
+    >
+        <key>
+            <column name="user_id" />
+        </key>
+        <one-to-many 
+            class="com.myconnector.domain.Bookmark"
+        />
+    </set>
+    <!-- bi-directional one-to-many association to Todo -->
+    <set
+        name="todos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="USER_ID" />
+        </key>
+        <one-to-many 
+            class="com.myconnector.domain.Todo"
+        />
+    </set>
+    <!-- bi-directional one-to-many association to ReleaseUserXref -->
+    <set
+        name="releaseUserXrefs"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="USER_ID" />
+        </key>
+        <one-to-many 
+            class="com.myconnector.domain.ReleaseUserXref"
+        />
+    </set>
+    <!-- bi-directional one-to-many association to Friend -->
+    <set
+        name="friendsByFriendId"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="FRIEND_ID" />
+        </key>
+        <one-to-many 
+            class="com.myconnector.domain.Friend"
+        />
+    </set>
+    <!-- bi-directional one-to-many association to Friend -->
+    <set
+        name="friendsById"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="ID" />
+        </key>
+        <one-to-many 
+            class="com.myconnector.domain.Friend"
+        />
+    </set>
+    <!-- bi-directional one-to-many association to Release -->
+    <set
+        name="releasesByCreatedBy"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="CREATED_BY" />
+        </key>
+        <one-to-many 
+            class="com.myconnector.domain.Release"
+        />
+    </set>
+
+    <!-- bi-directional one-to-many association to Cookie -->
+    <set name="cookies" lazy="true" inverse="true" cascade="none">
+        <key><column name="user_id" /></key>
+        <one-to-many class="com.myconnector.domain.UserCookie"/>
+    </set>
+
+
+</class>
+</hibernate-mapping>

@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+  - Application context definition
+	-->
+<beans>
+
+	<!-- ========================= GENERAL DEFINITIONS ========================= -->
+
+	<!-- Configurer that replaces ${...} placeholders with values from a properties file -->
+	<!-- (in this case, JDBC-related settings for the dataSource definition below) -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location"><value>classpath:jdbc.properties</value></property>
+	</bean>
+
+	<!-- Message source for this context, loaded from localized "messages_xx" files -->
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename"><value>messages</value></property>
+	</bean>
+
+
+	<!-- ========================= RESOURCE DEFINITIONS ========================= -->
+
+	<!-- Local DataSource that works in any environment -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"><value>${jdbc.driverClassName}</value></property>
+		<property name="url"><value>${jdbc.url}</value></property>
+		<property name="username"><value>${jdbc.username}</value></property>
+		<property name="password"><value>${jdbc.password}</value></property>
+	</bean>
+
+	<!-- Hibernate SessionFactory -->
+
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource"><ref local="dataSource"/></property>
+		<property name="mappingResources">
+                  <list>
+						<value>com/myconnector/domain/Bookmark.hbm.xml</value>
+						<value>com/myconnector/domain/UserData.hbm.xml</value>
+						<value>com/myconnector/domain/Friend.hbm.xml</value>
+						<value>com/myconnector/domain/File.hbm.xml</value>
+						<value>com/myconnector/domain/Release.hbm.xml</value>
+						<value>com/myconnector/domain/ReleaseFileXref.hbm.xml</value>
+						<value>com/myconnector/domain/ReleaseUserXref.hbm.xml</value>
+						<value>com/myconnector/domain/Dictionary.hbm.xml</value>
+						<value>com/myconnector/domain/Todo.hbm.xml</value>
+						<value>com/myconnector/domain/TsActivity.hbm.xml</value>
+						<value>com/myconnector/domain/TsCustomer.hbm.xml</value>
+						<value>com/myconnector/domain/TsEntry.hbm.xml</value>
+						<value>com/myconnector/domain/PageList.hbm.xml</value>
+						<value>com/myconnector/domain/PageIndex.hbm.xml</value>
+						<value>com/myconnector/domain/PageCache.hbm.xml</value>
+						<value>com/myconnector/domain/UserCookie.hbm.xml</value>
+						<value>com/myconnector/domain/TodoItem.hbm.xml</value>
+						<value>com/myconnector/domain/TodoList.hbm.xml</value>						
+                  </list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- Transaction manager for a single Hibernate SessionFactory (alternative to JTA) -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory"><ref local="sessionFactory"/></property>
+	</bean>
+	
+	<bean id="hibernateDAO" abstract="true">
+		<property name="sessionFactory"><ref local="sessionFactory"/></property>
+	</bean>
+
+	<!-- Data Access Objects -->
+	<bean id="bookmarkDAO" class="com.myconnector.dao.hibernate.BookmarkDAOImpl">
+		<property name="sessionFactory"><ref local="sessionFactory"/></property>
+	</bean>
+	<bean id="pageListDAO" class="com.myconnector.dao.hibernate.PageListDAOImpl">
+		<property name="sessionFactory"><ref local="sessionFactory"/></property>
+	</bean>
+	<bean id="pageIndexDAO" class="com.myconnector.dao.hibernate.PageIndexDAOImpl">
+		<property name="sessionFactory"><ref local="sessionFactory"/></property>
+	</bean>
+	<bean id="pageCacheDAO" class="com.myconnector.dao.hibernate.PageCacheDAOImpl">
+		<property name="sessionFactory"><ref local="sessionFactory"/></property>
+	</bean>
+	<bean id="userDataDAO" class="com.myconnector.dao.hibernate.UserDataDAOImpl">
+		<property name="sessionFactory"><ref local="sessionFactory"/></property>
+	</bean>
+	<bean id="friendDAO" class="com.myconnector.dao.hibernate.FriendDAOImpl">
+		<property name="sessionFactory"><ref local="sessionFactory"/></property>
+	</bean>
+	<bean id="fileDAO" class="com.myconnector.dao.hibernate.FileDAOImpl">
+		<property name="sessionFactory"><ref local="sessionFactory"/></property>
+	</bean>
+	<bean id="releaseDAO" class="com.myconnector.dao.hibernate.ReleaseDAOImpl">
+		<property name="sessionFactory"><ref local="sessionFactory"/></property>
+	</bean>
+	<bean id="releaseFileXrefDAO" class="com.myconnector.dao.hibernate.ReleaseFileXrefDAOImpl">
+		<property name="sessionFactory"><ref local="sessionFactory"/></property>
+	</bean>
+	<bean id="releaseUserXrefDAO" class="com.myconnector.dao.hibernate.ReleaseUserXrefDAOImpl">
+		<property name="sessionFactory"><ref local="sessionFactory"/></property>
+	</bean>
+	<bean id="dictionaryDAO" class="com.myconnector.dao.hibernate.DictionaryDAOImpl">
+		<property name="sessionFactory"><ref local="sessionFactory"/></property>
+	</bean>
+	<bean id="todoDAO" class="com.myconnector.dao.hibernate.TodoDAOImpl">
+		<property name="sessionFactory"><ref local="sessionFactory"/></property>
+	</bean>
+	<bean id="tsEntryDAO" class="com.myconnector.dao.hibernate.TsEntryDAOImpl">
+		<property name="sessionFactory"><ref local="sessionFactory"/></property>
+	</bean>
+	<bean id="tsActivityDAO" class="com.myconnector.dao.hibernate.TsActivityDAOImpl">
+		<property name="sessionFactory"><ref local="sessionFactory"/></property>
+	</bean>
+	<bean id="tsCustomerDAO" class="com.myconnector.dao.hibernate.TsCustomerDAOImpl">
+		<property name="sessionFactory"><ref local="sessionFactory"/></property>
+	</bean>
+	<bean id="userCookieDAO" class="com.myconnector.dao.hibernate.UserCookieDAOImpl">
+		<property name="sessionFactory"><ref local="sessionFactory"/></property>
+	</bean>
+	<bean id="todoListDAO" class="com.myconnector.dao.hibernate.TodoListDAOImpl" parent="hibernateDAO"/>
+	<bean id="todoItemDAO" class="com.myconnector.dao.hibernate.TodoItemDAOImpl" parent="hibernateDAO"/>
+	
+	<!-- Utility objects -->
+	
+	<bean id="pageParser" class="com.myconnector.indexer.PageParserImpl"/>
+
+	<!-- Services / Business Objects -->
+	
+	<bean id="bookmarkService" parent="txProxyTemplate">
+		<property name="target">
+			<bean class="com.myconnector.service.BookmarkServiceImpl">
+				<property name="bookmarkDAO"><ref local="bookmarkDAO"/></property>
+				<property name="pageListDAO"><ref local="pageListDAO"/></property>
+				<property name="pageCacheDAO"><ref local="pageCacheDAO"/></property>
+				<property name="userDataDAO"><ref local="userDataDAO"/></property>
+				<property name="idLength"><value>16</value></property>
+			</bean>		
+		</property>
+	</bean>
+
+	<bean id="indexService" parent="txProxyTemplate">
+		<property name="target">
+			<bean class="com.myconnector.indexer.IndexServiceImpl" autowire="byName">
+			</bean>		
+		</property>
+	</bean>
+
+	<bean id="searchService" parent="txProxyTemplate">
+		<property name="target">
+			<bean class="com.myconnector.indexer.SearchServiceImpl" autowire="byName">
+			</bean>		
+		</property>
+	</bean>
+
+	<bean id="securityServiceTarget" class="com.myconnector.service.SecurityServiceImpl">
+		<property name="userDataDAO"><ref local="userDataDAO"/></property>
+		<property name="userCookieDAO"><ref local="userCookieDAO"/></property>
+	</bean>
+	
+	<bean id="securityService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager"><ref bean="transactionManager"/></property>
+		<property name="target"><ref local="securityServiceTarget"/></property>
+		<property name="transactionAttributes">
+			<props>				
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+				<prop key="initialize">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="userService" parent="txProxyTemplate">
+	    <property name="target">
+			<bean class="com.myconnector.service.UserServiceImpl">
+				<property name="userDataDAO"><ref local="userDataDAO"/></property>
+				<property name="friendDAO"><ref local="friendDAO"/></property>
+			</bean>
+		</property>
+	</bean>	
+
+	<bean id="fileService" parent="txProxyTemplate">
+	    <property name="target">
+			<bean class="com.myconnector.service.FileServiceImpl">
+				<property name="fileDAO"><ref local="fileDAO"/></property>
+				<property name="releaseFileXrefDAO"><ref local="releaseFileXrefDAO"/></property>
+			</bean>
+		</property>
+	</bean>	
+
+	<bean id="releaseService" parent="txProxyTemplate">
+	    <property name="target">
+			<bean class="com.myconnector.service.ReleaseServiceImpl">
+				<property name="releaseDAO"><ref local="releaseDAO"/></property>
+				<property name="releaseFileXrefDAO"><ref local="releaseFileXrefDAO"/></property>
+			</bean>
+		</property>
+	</bean>	
+
+	<bean id="releaseFileService" parent="txProxyTemplate">
+	    <property name="target">
+			<bean class="com.myconnector.service.ReleaseFileServiceImpl">
+				<property name="releaseFileXrefDAO"><ref local="releaseFileXrefDAO"/></property>
+				<property name="fileService"><ref local="fileService"/></property>
+			</bean>
+		</property>
+	</bean>	
+
+	<bean id="releaseUserService" parent="txProxyTemplate">
+	    <property name="target">
+			<bean class="com.myconnector.service.ReleaseUserServiceImpl">
+				<property name="releaseUserXrefDAO"><ref local="releaseUserXrefDAO"/></property>
+			</bean>
+		</property>
+	</bean>	
+
+	<bean id="dictionaryService" parent="txProxyTemplate">
+	    <property name="target">
+			<bean class="com.myconnector.service.DictionaryServiceImpl">
+				<property name="dictionaryDAO"><ref local="dictionaryDAO"/></property>
+			</bean>
+		</property>
+	</bean>	
+
+	<bean id="todoService" parent="txProxyTemplate">
+	    <property name="target">
+			<bean class="com.myconnector.service.TodoServiceImpl">
+				<property name="todoDAO"><ref local="todoDAO"/></property>
+				<property name="userDataDAO"><ref local="userDataDAO"/></property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="tsEntryService" parent="txProxyTemplate">
+	    <property name="target">
+			<bean class="com.myconnector.service.TsEntryServiceImpl">
+				<property name="tsEntryDAO"><ref local="tsEntryDAO"/></property>
+				<property name="userDataDAO"><ref local="userDataDAO"/></property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="tsActivityService" parent="txProxyTemplate">
+	    <property name="target">
+			<bean class="com.myconnector.service.TsActivityServiceImpl">
+				<property name="tsActivityDAO"><ref local="tsActivityDAO"/></property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="tsCustomerService" parent="txProxyTemplate">
+	    <property name="target">
+			<bean class="com.myconnector.service.TsCustomerServiceImpl">
+				<property name="tsCustomerDAO"><ref local="tsCustomerDAO"/></property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="friendService" parent="txProxyTemplate">
+	    <property name="target">
+			<bean class="com.myconnector.service.FriendServiceImpl">
+				<property name="friendDAO"><ref local="friendDAO"/></property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="todoListService" parent="txProxyTemplate">
+	    <property name="target">
+			<bean class="com.myconnector.service.TodoListServiceImpl" autowire="byType"/>
+		</property>
+	</bean>
+
+	<bean id="todoItemService" parent="txProxyTemplate">
+	    <property name="target">
+			<bean class="com.myconnector.service.TodoItemServiceImpl" autowire="byType"/>
+		</property>
+	</bean>
+
+
+	<!-- START Web Services -->
+
+	<bean id="testService" class="com.myconnector.webservice.TestServiceImpl">
+	</bean>
+
+	<bean id="todoWebService" class="com.myconnector.webservice.TodoWebServiceImpl">
+	</bean>
+
+	<!-- END Web Services -->
+
+	<bean id="outsideOfTransactionService"
+		class="com.myconnector.indexer.OutsideOfTransactionServiceImpl"
+		autowire="byName">	
+	</bean>
+
+	<!-- AJAX servces -->
+
+	<bean id="bookmarkAJAX"
+		class="com.myconnector.web.ajax.BookmarkAJAXImpl"
+		autowire="byName">	
+	</bean>
+
+	<!--  Transaction proxies for services -->
+
+	<bean id="txProxyTemplate" abstract="true"
+	        class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+	    <property name="transactionManager"><ref local="transactionManager"></ref></property>
+	    <property name="transactionAttributes">
+	      <props>
+	        <prop key="*">PROPAGATION_REQUIRED</prop>
+	      </props>
+	    </property>
+	</bean>
+ 
+	<bean id="defaultValidator" class="com.myconnector.web.DefaultValidator">
+	</bean>
+
+	<!--  Commons Validator -->
+<!-- 
+	<bean id="validatorFactory" class="org.springframework.validation.commons.DefaultValidatorFactory" 
+	    init-method="init">
+	    <property name="resources">
+	        <list>
+	            <value>classpath:/validator-rules.xml</value>
+	            <value>classpath:/validation.xml</value>
+	        </list>
+	    </property>
+	</bean>
+	
+	<bean id="beanValidator" class="org.springframework.validation.commons.BeanValidator">
+	    <property name="validatorFactory"><ref local="validatorFactory"/></property>
+	</bean>
+ -->
+</beans>

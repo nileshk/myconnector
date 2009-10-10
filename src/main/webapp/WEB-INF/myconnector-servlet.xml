@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+  - @author Nilesh Kapadia (nileshka@gmail.com)
+  -
+  - Application context definition for "example" DispatcherServlet.
+  -->
+
+<beans>
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource" >
+		<property name="basename"><value>Messages</value></property>
+	</bean>
+	
+	<bean name="/initialize.do" class="com.myconnector.web.controller.InitializeController">
+		<property name="view"><value>initialize.jsp</value></property>
+		<property name="securityService"><ref bean="securityService"/></property>
+	</bean>	
+	<bean name="/home.do" class="com.myconnector.web.controller.LoginController">
+		<property name="bookmarkService"><ref bean="bookmarkService"/></property>
+		<property name="securityService"><ref bean="securityService"/></property>
+		<property name="userCookieCheck"><ref bean="loginInterceptor"/></property>
+		<property name="commandClass"><value>com.myconnector.domain.Login</value></property>
+		<!-- TODO add a programmatic validator here -->
+<!-- 		<property name="validator"><ref bean="beanValidator"/></property>-->
+		<property name="formView"><value>home.jsp</value></property>
+		<property name="successView"><value>home.jsp</value></property>		
+	</bean>
+	<bean name="/logout.do" class="com.myconnector.web.controller.LogoutController">
+		<property name="view"><value>../../home.do</value></property>
+		<property name="securityService"><ref bean="securityService"/></property>
+	</bean>	
+
+	<bean id="secure_profile" class="com.myconnector.web.controller.ProfileController">
+		<property name="userService"><ref bean="userService"/></property>
+		<property name="bookmarkService"><ref bean="bookmarkService"/></property>
+		<property name="view"><value>profile.jsp</value></property>
+	</bean>	
+	<bean id="secure_userConfig" class="com.myconnector.web.controller.GenericViewController">
+		<property name="view"><value>userConfig.jsp</value></property>
+	</bean>	
+	<bean id="secure_list" class="com.myconnector.web.controller.ListController">
+		<property name="bookmarkService"><ref bean="bookmarkService"/></property>
+	</bean>
+	<bean id="secure_bookmarkListCurrentUser" class="com.myconnector.web.controller.BookmarkListCurrentUserController">
+		<property name="bookmarkService"><ref bean="bookmarkService"/></property>
+		<property name="view"><value>list.jsp</value></property>
+	</bean>
+	<bean id="secure_search" class="com.myconnector.web.controller.BookmarkSearchController">
+		<property name="searchService"><ref bean="searchService"/></property>
+ 		<property name="validator"><ref bean="defaultValidator"/></property>
+		<property name="formView"><value>search.jsp</value></property>
+		<property name="successView"><value>searchResults.jsp</value></property>		
+	</bean>
+	<bean id="secure_searchByUser" class="com.myconnector.web.controller.BookmarkSearchByUserController">
+		<property name="searchService"><ref bean="searchService"/></property>
+<!-- 		<property name="validator"><ref bean="defaultValidator"/></property>-->
+		<property name="formView"><value>search.jsp</value></property>
+		<property name="successView"><value>searchResults.jsp</value></property>		
+	</bean>
+	<bean id="secure_searchByUserAndFriends" class="com.myconnector.web.controller.BookmarkSearchByUserAndFriendsController">
+		<property name="searchService"><ref bean="searchService"/></property>
+<!-- 		<property name="validator"><ref bean="defaultValidator"/></property>-->
+		<property name="formView"><value>search.jsp</value></property>
+		<property name="successView"><value>searchResults.jsp</value></property>		
+	</bean>
+	<bean id="secure_bookmarkAdmin" class="com.myconnector.web.controller.GenericViewController">
+		<property name="view"><value>bookmarkAdmin.jsp</value></property>
+	</bean>
+	<bean id="secure_bookmarkGenerateIndex" class="com.myconnector.web.controller.BookmarkGenerateIndexController">
+		<property name="indexService"><ref bean="indexService"/></property>
+		<property name="view"><value>bookmarkGenerateIndexResults.jsp</value></property>
+	</bean>
+	<bean id="secure_bookmarkCacheView" class="com.myconnector.web.controller.BookmarkCacheView">
+		<property name="bookmarkService"><ref bean="bookmarkService"/></property>
+		<property name="view"><value>bookmarkCacheView.jsp</value></property>
+	</bean>
+	<bean id="secure_edit" class="com.myconnector.web.controller.EditController">
+		<property name="bookmarkService"><ref bean="bookmarkService"/></property>
+		<property name="commandClass"><value>com.myconnector.domain.Bookmark</value></property>
+<!-- 		<property name="validator"><ref bean="defaultValidator"/></property> -->
+		<property name="formView"><value>edit.jsp</value></property>
+		<property name="successView"><value>../../bookmarkListCurrentUser.do</value></property>		
+	</bean>
+	<bean id="secure_delete" class="com.myconnector.web.controller.GenericDeleteController">
+		<property name="view"><value>list.do</value></property>
+		<property name="service"><ref bean="bookmarkService"/></property>
+	</bean>
+	<bean id="secure_fileUpload" class="com.myconnector.web.controller.FileUploadController">
+		<property name="fileService"><ref bean="fileService"/></property>
+		<property name="formView"><value>fileUpload.jsp</value></property>
+		<property name="successView"><value>home.do</value></property>		
+	</bean>
+	<bean id="secure_fileList" class="com.myconnector.web.controller.OldGenericListController">
+		<property name="view"><value>fileList.jsp</value></property>
+		<property name="service"><ref bean="fileService"/></property>
+		<property name="listName"><value>fileList</value></property>
+	</bean>
+	<bean id="secure_fileDownload" class="com.myconnector.web.controller.FileDownloadController">
+		<property name="fileService"><ref bean="fileService"/></property>
+	</bean>
+	<bean id="secure_fileDelete" class="com.myconnector.web.controller.GenericDeleteController">
+		<property name="view"><value>fileList.do</value></property>
+		<property name="service"><ref bean="fileService"/></property>
+	</bean>
+	<bean id="secure_users" class="com.myconnector.web.controller.UsersController">
+		<property name="view"><value>users.jsp</value></property>
+		<property name="userService"><ref bean="userService"/></property>
+	</bean>
+	<bean id="secure_userList" class="com.myconnector.web.controller.UserListController">
+		<property name="formView"><value>userList.jsp</value></property>
+		<property name="userService"><ref bean="userService"/></property>
+	</bean>
+	<bean id="secure_userDelete" class="com.myconnector.web.controller.GenericDeleteController">
+		<property name="view"><value>userList.do</value></property>
+		<property name="service"><ref bean="userService"/></property>
+	</bean>
+	<bean id="secure_userAddFriend" class="com.myconnector.web.controller.FriendAddController" autowire="byName">
+		<property name="view"><value>users.jsp</value></property>
+	</bean>
+	<bean id="secure_friendDelete" class="com.myconnector.web.controller.GenericDeleteController">
+		<property name="view"><value>profile.do</value></property>
+		<property name="service"><ref bean="friendService"/></property>
+	</bean>
+	<bean id="secure_releaseList" class="com.myconnector.web.controller.OldGenericListController">
+		<property name="view"><value>releaseList.jsp</value></property>
+		<property name="service"><ref bean="releaseService"/></property>
+	</bean>
+	<bean id="secure_releaseEdit" class="com.myconnector.web.controller.ReleaseEditController">
+		<property name="releaseService"><ref bean="releaseService"/></property>
+		<property name="formView"><value>releaseEdit.jsp</value></property>
+		<property name="successView"><value>releaseList.do</value></property>		
+	</bean>
+	<bean id="secure_releaseDelete" class="com.myconnector.web.controller.GenericDeleteController">
+		<property name="view"><value>releaseList.do</value></property>
+		<property name="service"><ref bean="releaseService"/></property>
+	</bean>
+	<bean id="secure_releaseFileUpload" class="com.myconnector.web.controller.ReleaseFileUploadController">
+		<property name="releaseFileService"><ref bean="releaseFileService"/></property>
+		<property name="formView"><value>releaseFileUpload.jsp</value></property>
+		<property name="successView"><value>releaseView.do</value></property>		
+	</bean>
+	<bean id="secure_releaseView" class="com.myconnector.web.controller.ReleaseViewController">
+		<property name="view"><value>releaseView.jsp</value></property>
+		<property name="releaseService"><ref bean="releaseService"/></property>
+	</bean>
+	<bean id="secure_releaseFileDelete" class="com.myconnector.web.controller.GenericDeleteController">
+		<property name="view"><value>releaseView.do</value></property>
+		<property name="service"><ref bean="fileService"/></property>
+	</bean>
+	<bean id="secure_releaseUserSelection" class="com.myconnector.web.controller.ReleaseUserSelectionController">
+		<property name="userService"><ref bean="userService"/></property>
+		<property name="releaseUserService"><ref bean="releaseUserService"/></property>
+		<property name="formView"><value>userListSelection.jsp</value></property>
+		<property name="successView"><value>releaseView.do</value></property>		
+	</bean>
+	<bean id="secure_releaseUserDelete" class="com.myconnector.web.controller.ReleaseUserDeleteController">
+		<property name="view"><value>releaseView.do</value></property>
+		<property name="releaseUserService"><ref bean="releaseUserService"/></property>
+	</bean>
+	<bean id="secure_dictionaryEdit" class="com.myconnector.web.controller.OldGenericEditController">
+		<property name="service"><ref bean="dictionaryService"/></property>
+		<property name="commandClass"><value>com.myconnector.domain.Dictionary</value></property>		
+		<property name="formView"><value>dictionaryEdit.jsp</value></property>
+		<property name="successView"><value>dictionaryList.do</value></property>		
+	</bean>
+	<bean id="secure_dictionaryList" class="com.myconnector.web.controller.OldGenericListController">
+		<property name="view"><value>dictionaryList.jsp</value></property>
+		<property name="service"><ref bean="dictionaryService"/></property>
+	</bean>
+	<bean id="secure_bookmarkSubmit" class="com.myconnector.web.controller.BookmarkSubmitController">
+		<property name="bookmarkService"><ref bean="bookmarkService"/></property>
+		<property name="commandClass"><value>com.myconnector.domain.Bookmark</value></property>
+		<property name="validator"><ref bean="defaultValidator"/></property>
+		<property name="formView"><value>bookmarkSubmit.jsp</value></property>
+		<property name="successView"><value>../../list.do</value></property>
+		<property name="closePopupView"><value>closePopup.jsp</value></property>
+	</bean>
+	<bean name="/bookmarkRSS.do" class="com.myconnector.web.controller.BookmarkRSSController">
+		<property name="bookmarkService"><ref bean="bookmarkService"/></property>
+		<property name="view"><value>bookmark_rss.jsp</value></property>
+	</bean>
+
+	<bean id="secure_tsActivityList" class="com.myconnector.web.controller.OldGenericListController">
+		<property name="view"><value>tsActivityList.jsp</value></property>
+		<property name="service"><ref bean="tsActivityService"/></property>
+	</bean>
+	<bean id="secure_tsActivityEdit" class="com.myconnector.web.controller.OldGenericEditController">
+		<property name="service"><ref bean="tsActivityService"/></property>
+		<property name="commandClass"><value>com.myconnector.domain.TsActivity</value></property>		
+		<property name="formView"><value>tsActivityEdit.jsp</value></property>
+		<property name="successView"><value>tsActivityList.do</value></property>		
+	</bean>
+	<bean id="secure_tsCustomerList" class="com.myconnector.web.controller.OldGenericListController">
+		<property name="view"><value>tsCustomerList.jsp</value></property>
+		<property name="service"><ref bean="tsCustomerService"/></property>
+	</bean>
+	<bean id="secure_tsCustomerEdit" class="com.myconnector.web.controller.OldGenericEditController">
+		<property name="service"><ref bean="tsCustomerService"/></property>
+		<property name="commandClass"><value>com.myconnector.domain.TsCustomer</value></property>		
+		<property name="formView"><value>tsCustomerEdit.jsp</value></property>
+		<property name="successView"><value>tsCustomerList.do</value></property>		
+	</bean>
+	<bean id="secure_timesheet" class="com.myconnector.web.controller.TimesheetController">
+		<property name="tsActivityService"><ref bean="tsActivityService"/></property>
+		<property name="tsCustomerService"><ref bean="tsCustomerService"/></property>
+		<property name="tsEntryService"><ref bean="tsEntryService"/></property>		
+		<property name="formView"><value>timesheet.jsp</value></property>
+		<property name="successView"><value>timesheet.jsp</value></property>		
+	</bean>
+	<bean id="secure_timesheetComplete" class="com.myconnector.web.controller.TimesheetCompleteController">
+		<property name="tsEntryService"><ref bean="tsEntryService"/></property>		
+		<property name="view"><value>timesheet.do</value></property>
+	</bean>
+	<bean id="secure_timesheetFilter" class="com.myconnector.web.controller.TimesheetFilterController">
+		<property name="formView"><value>timesheet.do</value></property>
+		<property name="successView"><value>timesheet.do</value></property>		
+	</bean>
+	<bean id="secure_todoList" class="com.myconnector.web.controller.OldGenericListController">
+		<property name="view"><value>todoList.jsp</value></property>
+		<property name="service"><ref bean="todoService"/></property>
+	</bean>
+	<bean id="secure_todoListAdvanced" class="com.myconnector.web.controller.TodoListAdvancedController">
+		<property name="view"><value>todoListAdvanced.jsp</value></property>
+		<property name="todoService"><ref bean="todoService"/></property>
+	</bean>
+	<bean id="secure_todoEdit" class="com.myconnector.web.controller.OldGenericEditController">
+		<property name="service"><ref bean="todoService"/></property>
+		<property name="commandClass"><value>com.myconnector.domain.Todo</value></property>		
+		<property name="formView"><value>todoEdit.jsp</value></property>
+		<property name="successView"><value>todoList.do</value></property>		
+	</bean>
+	<bean id="secure_todoDelete" class="com.myconnector.web.controller.GenericDeleteController">
+		<property name="view"><value>todoList.do</value></property>
+		<property name="service"><ref bean="todoService"/></property>
+	</bean>
+	<bean id="secure_todoLists" class="com.myconnector.web.controller.GenericListController">
+		<property name="view"><value>todoLists.jsp</value></property>
+		<property name="service"><ref bean="todoListService"/></property>
+	</bean>
+	<bean id="secure_todoListEdit" class="com.myconnector.web.controller.GenericEditController">
+		<property name="service"><ref bean="todoListService"/></property>
+		<property name="commandClass"><value>com.myconnector.domain.TodoList</value></property>		
+		<property name="formView"><value>todoListEdit.jsp</value></property>
+		<property name="successView"><value>todoLists.do</value></property>		
+	</bean>
+	<bean id="secure_todoItemList" class="com.myconnector.web.controller.GenericListController">
+		<property name="view"><value>todoItemList.jsp</value></property>
+		<property name="service"><ref bean="todoItemService"/></property>
+	</bean>
+	<bean id="secure_todoItemEdit" class="com.myconnector.web.controller.GenericEditController">
+		<property name="service"><ref bean="todoItemService"/></property>
+		<property name="commandClass"><value>com.myconnector.domain.TodoItem</value></property>		
+		<property name="formView"><value>todoItemEdit.jsp</value></property>
+		<property name="successView"><value>todoItemList.do</value></property>		
+	</bean>	
+
+	<bean id="loginInterceptor" class="com.myconnector.web.LoginInterceptor">
+		<property name="securityService" ref="securityService"/>
+		<property name="view"><value>../../home.do</value></property>
+	</bean>
+
+	<!--  Security Levels: Guest = 5, Basic = 10, User = 50, Admin = 75, SuperUser = 100  -->
+	<bean id="permissionInterceptor" class="com.myconnector.web.PermissionInterceptor">
+		<property name="view"><value>../../home.do</value></property>
+		<property name="permissionMap">
+			<map>
+				<entry key="/list.do"><value>5</value></entry>
+				<entry key="/edit.do"><value>10</value></entry>
+				<entry key="/search.do"><value>50</value></entry>
+				<entry key="/bookmarkSubmit.do"><value>10</value></entry>
+				<entry key="/delete.do"><value>50</value></entry>
+				<entry key="/profile.do"><value>5</value></entry>
+				<entry key="/bookmarkAdmin.do"><value>75</value></entry>
+				<entry key="/bookmarkGenerateIndex.do"><value>75</value></entry>
+				<entry key="/cacheView.do"><value>50</value></entry>
+				
+				<entry key="/fileUpload.do"><value>50</value></entry>
+				<entry key="/fileList.do"><value>5</value></entry>
+				<entry key="/fileDownload.do"><value>5</value></entry>
+				<entry key="/fileDelete.do"><value>50</value></entry>											
+				
+				<entry key="/users.do"><value>10</value></entry>
+				<entry key="/userList.do"><value>75</value></entry>
+				<entry key="/userDelete.do"><value>100</value></entry>
+
+				<entry key="/userAddFriend.do"><value>50</value></entry>
+				<entry key="/friendDelete.do"><value>50</value></entry>
+
+				<entry key="/releaseList.do"><value>5</value></entry>
+				<entry key="/releaseFileUpload.do"><value>50</value></entry>
+				<entry key="/releaseView.do"><value>5</value></entry>
+			</map>
+		</property>				
+	</bean>
+
+	<!--  View Resolvers -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"><value>org.springframework.web.servlet.view.JstlView</value></property>
+		<property name="prefix"><value>/WEB-INF/jsp/</value></property>
+		<property name="suffix"><value></value></property>
+	</bean>
+<!-- 	
+	<bean id="velocityConfig" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+	  <property name="resourceLoaderPath"><value>/WEB-INF/velocity/</value></property>          
+	</bean>
+
+	<bean id="velocityViewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+	  <property name="cache"><value>true</value></property>
+	  <property name="prefix"><value></value></property>
+	  <property name="suffix"><value></value></property>
+	</bean>	
+-->
+
+	<bean id="multipartResolver" 
+	    class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	</bean>
+
+	<bean id="defaultHandlerMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>
+
+	<bean id="secureHandlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<ref bean="loginInterceptor"/>
+				<ref bean="permissionInterceptor"/>				
+			</list>
+		</property>
+		<property name="urlMap">
+			<map>
+				<entry key="/list.do"><ref local="secure_list"/></entry>
+				<entry key="/bookmarkSubmit.do"><ref local="secure_bookmarkSubmit"/></entry>
+				<entry key="/edit.do"><ref local="secure_edit"/></entry>
+				<entry key="/delete.do"><ref local="secure_delete"/></entry>
+				<entry key="/search.do"><ref local="secure_search"/></entry>
+				<entry key="/searchByUser.do"><ref local="secure_searchByUser"/></entry>
+				<entry key="/searchByUserAndFriends.do"><ref local="secure_searchByUserAndFriends"/></entry>				
+				<entry key="/bookmarkListCurrentUser.do"><ref local="secure_bookmarkListCurrentUser"/></entry>
+				<entry key="/userConfig.do"><ref local="secure_userConfig"/></entry>
+				<entry key="/bookmarkAdmin.do"><ref local="secure_bookmarkAdmin"/></entry>
+				<entry key="/bookmarkGenerateIndex.do"><ref local="secure_bookmarkGenerateIndex"/></entry>				
+				<entry key="/cacheView.do"><ref local="secure_bookmarkCacheView"/></entry>
+
+				<entry key="/profile.do"><ref local="secure_profile"/></entry>
+				<entry key="/fileUpload.do"><ref local="secure_fileUpload"/></entry>
+				<entry key="/fileList.do"><ref local="secure_fileList"/></entry>
+				<entry key="/fileDownload.do"><ref local="secure_fileDownload"/></entry>
+				<entry key="/fileDelete.do"><ref local="secure_fileDelete"/></entry>
+				<entry key="/users.do"><ref local="secure_users"/></entry>
+				<entry key="/userList.do"><ref local="secure_userList"/></entry>
+				<entry key="/userDelete.do"><ref local="secure_userDelete"/></entry>
+				<entry key="/userAddFriend.do"><ref local="secure_userAddFriend"/></entry>
+				<entry key="/friendDelete.do"><ref local="secure_friendDelete"/></entry>
+
+				<entry key="/releaseList.do"><ref local="secure_releaseList"/></entry>
+				<entry key="/releaseEdit.do"><ref local="secure_releaseEdit"/></entry>
+				<entry key="/releaseDelete.do"><ref local="secure_releaseDelete"/></entry>
+				<entry key="/releaseFileUpload.do"><ref local="secure_releaseFileUpload"/></entry>
+				<entry key="/releaseView.do"><ref local="secure_releaseView"/></entry>
+				<entry key="/releaseFileDelete.do"><ref local="secure_releaseFileDelete"/></entry>
+				<entry key="/releaseUserSelection.do"><ref local="secure_releaseUserSelection"/></entry>
+				<entry key="/releaseUserDelete.do"><ref local="secure_releaseUserDelete"/></entry>
+
+				<entry key="/dictionaryEdit.do"><ref local="secure_dictionaryEdit"/></entry>
+				<entry key="/dictionaryList.do"><ref local="secure_dictionaryList"/></entry>
+
+				<entry key="/tsActivityList.do"><ref local="secure_tsActivityList"/></entry>
+				<entry key="/tsActivityEdit.do"><ref local="secure_tsActivityEdit"/></entry>
+				<entry key="/tsCustomerList.do"><ref local="secure_tsCustomerList"/></entry>
+				<entry key="/tsCustomerEdit.do"><ref local="secure_tsCustomerEdit"/></entry>
+				<entry key="/timesheet.do"><ref local="secure_timesheet"/></entry>
+				<entry key="/timesheetComplete.do"><ref local="secure_timesheetComplete"/></entry>
+				<entry key="/timesheetFilter.do"><ref local="secure_timesheetFilter"/></entry>
+
+				<entry key="/todoLists.do"><ref local="secure_todoLists"/></entry>
+				<entry key="/todoListEdit.do"><ref local="secure_todoListEdit"/></entry>
+				<entry key="/todoItemList.do"><ref local="secure_todoItemList"/></entry>
+				<entry key="/todoItemEdit.do"><ref local="secure_todoItemEdit"/></entry>
+				
+				<entry key="/todoList.do"><ref local="secure_todoList"/></entry>
+				<entry key="/todoListAdvanced.do"><ref local="secure_todoListAdvanced"/></entry>
+				<entry key="/todoEdit.do"><ref local="secure_todoEdit"/></entry>
+				<entry key="/todoDelete.do"><ref local="secure_todoDelete"/></entry>
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="exceptionResolver"
+        class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <prop key="com.myconnector.exception.MessageException">error.jsp</prop>
+            </props>
+        </property>
+    </bean>	
+
+</beans>

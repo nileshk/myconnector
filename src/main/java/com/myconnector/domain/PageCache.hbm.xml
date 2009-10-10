@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+		"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping default-lazy="false">
+
+<class name="com.myconnector.domain.PageCache" table="page_cache">
+
+    <id name="id" type="java.lang.Integer" column="id">
+        <generator class="foreign">
+        	<param name="property">page</param>
+        </generator>        
+    </id>
+
+    <property name="pageText" type="java.lang.String" column="page_text" not-null="true" length="32768"/>    
+    <property name="timeLoaded" type="java.util.Date" column="time_loaded"/>
+
+	<one-to-one name="page" class="com.myconnector.domain.PageList"/>
+
+</class>
+</hibernate-mapping>

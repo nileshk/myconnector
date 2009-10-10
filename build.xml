@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+
+<project name="myconnector" basedir="." default="usage">
+
+	<property name="name" value="myconnector"/>
+
+	<property name="src.dir" value="src"/>
+	<property name="web.dir" value="WebRoot"/>
+	<property name="output.dir" value="../myconnector-output"/>
+	<property name="war.dir" value="${output.dir}/${name}"/>
+	<property name="lib.build.dir" value="lib"/>	
+	<property name="lib.deploy.dir" value="${web.dir}/WEB-INF/lib"/>
+		
+	<property name="client.dir" value="${output.dir}/client"/>
+	<property name="build.dir" value="${output.dir}/.classes"/>
+	<property name="weblib.dir" value="${war.dir}/WEB-INF/lib"/>
+	<property name="dist.dir" value="${output.dir}/dist"/>
+	<property name="webclasses.dir" value="${war.dir}/WEB-INF/classes"/>
+
+	<path id="master-classpath">
+		<fileset dir="${lib.build.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
+
+		<fileset id="jar-fileset" dir="${lib.deploy.dir}">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+
+	<target name="usage">
+
+		<echo message=""/>
+		<echo message="${name} build file"/>
+		<echo message="------------------------------------------------------"/>
+		<echo message=""/>
+		<echo message="Available targets are:"/>
+		<echo message=""/>
+		<echo message="clean                      --> Clean output dirs"/>
+		<echo message="build                      --> Compile main Java sources and copy libraries"/>
+		<echo message="warfile                    --> Build the web application archive"/>
+		<echo message="all                        --> Clean, build, warfile"/>
+		<echo message="generate-proxy             --> Generate web service proxy for bookmark"/>
+		<echo message="generate-proxy-dictionary  --> Generate web service proxy for dictionary"/>
+		<echo message=""/>
+
+	</target>
+
+
+	<target name="clean" description="Clean output dirs (build, weblib, dist)">
+
+		<delete dir="${build.dir}"/>
+		<delete dir="${war.dir}"/>
+		<delete dir="${dist.dir}"/>
+		<delete dir="${client.dir}"/>
+
+	</target>
+
+
+	<target name="build" description="Compile main source tree java files into class files, generate jar files">
+
+		<mkdir dir="${weblib.dir}"/>
+		<mkdir dir="${war.dir}"/>		
+		<mkdir dir="${webclasses.dir}"/>
+		
+		<javac destdir="${webclasses.dir}" source="1.5" target="1.5" debug="true"
+				deprecation="false" optimize="false" failonerror="true">
+			<src path="${src.dir}"/>
+			<classpath refid="master-classpath"/>
+		</javac>
+
+		<copy todir="${webclasses.dir}" preservelastmodified="true">
+			<fileset dir="${src.dir}">
+				<include name="**/*.xml"/>
+				<include name="**/*.properties"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${war.dir}" preservelastmodified="true">
+			<fileset dir="${web.dir}">
+				<exclude name="WEB-INF/classes/**/*"/>
+				<include name="**/*"/>				
+			</fileset>
+		</copy>
+
+		<copy todir="${weblib.dir}" preservelastmodified="true">
+			<fileset refid="jar-fileset"/>
+		</copy>
+
+	</target>
+
+	
+	<target name="warfile" depends="build" description="Build the web application archive">
+
+		<mkdir dir="${dist.dir}"/>
+
+		<war warfile="${dist.dir}/${name}.war" basedir="${war.dir}" webxml="${war.dir}/WEB-INF/web.xml">
+			<exclude name="WEB-INF/web.xml"/>
+			<include name="**/*"/>
+		</war>
+
+	</target>
+<!--
+	<path id="junitclasspath">
+		<pathelement location="${jar.dir}/junit-3.8.1.jar"/>
+		<pathelement location="${jar.dir}/ant-junit.jar"/>
+	</path>
+	
+	
+	<taskdef name="junit" 
+	            classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask" classpathref="junitclasspath">
+	</taskdef>	
+-->	
+	<target name="tests">
+		<junit printsummary="yes">
+			<classpath>
+				<pathelement location="${weblib.dir}/${name}.jar"/>
+				<path>
+					<filelist refid="master-classpath"/>
+				</path>
+			</classpath>
+		</junit>
+	</target>
+
+	<target name="all" depends="clean,build,warfile" description="Clean,build,warfile"/>
+
+	<target name="generate-proxy">
+		<taskdef resource="axis-tasks.properties" classpathref="master-classpath" />
+       <axis-wsdl2java
+               output="${basedir}/client/"
+               verbose="true"
+               noimports="true"
+               url="http://localhost:8080/myconnector/services/Bookmark?wsdl">
+               <mapping
+                       namespace="http://www.myconnector.com/webservices/"
+                       package="com.myconnector.client.proxy" />
+       </axis-wsdl2java>
+	</target>	
+
+	<target name="generate-proxy-dictionary">
+		<taskdef resource="axis-tasks.properties" classpathref="master-classpath" />
+       <axis-wsdl2java
+               output="${basedir}/client/"
+               verbose="true"
+               noimports="true"
+               url="http://localhost:8080/myconnector/services/Dictionary?wsdl">
+               <mapping
+                       namespace="http://www.myconnector.com/webservices/"
+                       package="com.myconnector.client.dictionary.proxy" />
+       </axis-wsdl2java>
+	</target>	
+
+	<taskdef name="wsgen" classname="org.codehaus.xfire.gen.WsGenTask" 
+	     classpathref="master-classpath"/>
+
+	<target name="generate-proxy-todo">	
+		<wsgen outputDirectory="${basedir}/client/"
+		  wsdl="http://localhost:8080/myconnector/services/TodoService?wsdl" package="com.myconnector.client.proxy" overwrite="true"/>	
+	</target>
+	
+	
+	<target name="generate-proxy-test">	
+		<wsgen outputDirectory="${basedir}/client/"
+		  wsdl="http://localhost:8080/myconnector/services/TestService?wsdl" package="com.myconnector.client.proxy.test" overwrite="true"/>	
+	</target>
+	
+</project>

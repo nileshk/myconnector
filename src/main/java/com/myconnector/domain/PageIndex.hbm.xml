@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+		"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping default-lazy="false">
+
+<class name="com.myconnector.domain.PageIndex" table="page_index">
+
+	<composite-id name="compId" class="com.myconnector.domain.PageIndexPK">
+	    <key-many-to-one name="page" class="com.myconnector.domain.PageList" column="id"/>
+	    <key-property name="word" type="java.lang.String" column="word" length="255"/>
+	</composite-id>	
+   
+    <property name="occurances" type="java.lang.Integer" column="occurances"/>
+
+</class>
+</hibernate-mapping>

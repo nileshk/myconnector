@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE faces-config PUBLIC "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN" "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
+<faces-config>
+
+	<navigation-rule>
+		<from-view-id>/jsf/test.jsp</from-view-id>
+		<navigation-case>
+			<from-outcome>next</from-outcome>
+			<to-view-id>/jsf/next.jsp</to-view-id>		
+		</navigation-case>
+	</navigation-rule>
+
+	<managed-bean>
+		<managed-bean-name>loginBean</managed-bean-name>
+		<managed-bean-class>com.myconnector.web.faces.LoginBean</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>		
+	</managed-bean>
+
+
+</faces-config>
+

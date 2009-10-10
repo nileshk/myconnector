@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+		"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping default-lazy="false">
+<class name="com.myconnector.domain.TsEntry" table="ts_entry">
+
+	<id name="id" type="java.lang.String" column="id">
+		<generator class="uuid.hex" />
+	</id>    
+	
+	<property name="hours" type="java.math.BigDecimal" column="hours" length="7" />
+    <property name="dateTimeStart" type="java.util.Date" column="date_time_start" length="25" />
+    <property name="dateOccur" type="java.util.Date" column="date_occur" length="25" />
+    <property name="description" type="java.lang.String" column="description" not-null="true" length="1024" />
+    
+    <many-to-one name="user" class="com.myconnector.domain.UserData" not-null="true">
+        <column name="USER_ID" />
+    </many-to-one>
+    
+    <many-to-one name="activity" class="com.myconnector.domain.TsActivity" not-null="true">
+        <column name="ACTIVITY_ID" />
+    </many-to-one>
+    
+    <many-to-one name="customer" class="com.myconnector.domain.TsCustomer">
+        <column name="CUSTOMER_ID" />
+    </many-to-one>
+	
+</class>
+</hibernate-mapping>

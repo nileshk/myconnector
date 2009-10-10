@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+  - Application context definition
+	-->
+<beans>
+	<!-- ========================= GENERAL DEFINITIONS ========================= -->
+	<!-- Configurer that replaces ${...} placeholders with values from a properties file -->
+	<!--
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location"><value>files.properties</value></property>
+	</bean>
+	-->
+	<!-- Utility classes -->
+	<!--
+	<bean id="fileInputHandler" 
+		class="com.myconnector.client.util.FileInputHandler">
+		<property name="filename">
+			<value>C:\Programs\eclipse-common\workspace\myconnector\client\com\myconnector\client\bkfile.txt</value>
+		</property>
+	</bean>
+	-->
+	<bean id="fileParser" class="com.myconnector.client.util.FileParser">
+	</bean>
+	
+	<!-- Web services -->
+<!--  	<bean id="bookmarkWS" 
+ 		class="org.springframework.remoting.jaxrpc.JaxRpcPortProxyFactoryBean">
+		<property name="serviceFactoryClass">
+			<value>org.apache.axis.client.ServiceFactory</value>
+		</property>		
+		<property name="wsdlDocumentUrl">
+			<value>http://localhost:8080/myconnector/services/Bookmark?wsdl</value>
+		</property>
+		<property name="namespaceUri">
+			<value>http://www.myconnector.com/webservices/</value>
+		</property>
+		<property name="serviceName">
+			<value>BookmarkWSImplService</value>
+		</property>
+		<property name="portName">
+			<value>Bookmark</value>
+		</property>
+		<property name="serviceInterface">
+			<value>com.myconnector.webservice.BookmarkWS</value>
+		</property>
+		<property name="maintainSession">
+			<value>true</value>
+		</property>
+		<property name="servicePostProcessors">
+			<list>
+				<bean class="com.myconnector.client.util.BookmarkServicePostProcessor">
+					<property name="typeNamespaceUri"><value>http://www.myconnector.com/webservices/</value></property>
+				</bean>
+			</list>
+		</property>		
+	</bean>-->
+		
+	<!-- Functional classes -->	
+	<bean id="bkMethods" class="com.myconnector.client.BkMethods">
+		<property name="fileParser">
+			<ref local="fileParser"/>
+		</property>
+<!--  		<property name="bookmarkWS">
+			<ref local="bookmarkWS"/>			
+		</property>-->
+	</bean>
+</beans>
